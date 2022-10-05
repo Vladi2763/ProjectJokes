@@ -1,0 +1,20 @@
+.category {
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid black;
+    border-radius: 20px;
+    height: 30px;
+    background-color: rgb(212, 209, 209);
+    margin-bottom: 10px;
+}
+
+.category:hover {
+    background-color: rgb(175, 172, 172);
+    cursor: pointer;
+}
+
+.category:last-child {
+    margin-bottom: 0px;
+}
