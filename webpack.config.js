@@ -47,7 +47,7 @@ module.exports = {
             loader: "css-loader",
             options: {
               modules: {
-                localIdentName: "[path][local]",
+                localIdentName: "[folder]_[local]_[hash]",
               },
             },
           },
@@ -61,6 +61,10 @@ module.exports = {
       {
         test: /\.(ts|tsx)$/,
         use: "ts-loader",
+      },
+      {
+        test: /\.(png|svg|jpg|jpeg|gif)$/i,
+        type: "asset/resource",
       },
     ],
   },

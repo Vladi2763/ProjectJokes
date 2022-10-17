@@ -2,12 +2,25 @@
     width: 50%;
     display: flex;
     justify-content: center;
-    align-items: center;
     border: 1px solid black;
     border-radius: 20px;
-    height: 30px;
+    min-height: 60px;
+    max-height: 90px;
     background-color: rgb(212, 209, 209);
     margin-bottom: 10px;
+    padding: 5px;
+
+    &_selectedCategory {
+      background-color: rgba(118, 131, 136, 0.918);
+      transition-duration: 0.5s;
+    }
+
+    &__name {
+      text-align: center;
+      overflow: hidden;
+      white-space: break-spaces;
+      text-overflow: ellipsis;  
+    }
 }
 
 .category:hover {

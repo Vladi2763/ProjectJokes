@@ -1,13 +1,19 @@
-import Category from "../Category";
+import Category from "../Category/Category";
 import classes from "./Categories.module.scss";
 
-const DATA: Array<string> = require("../../../categories.json");
+import { useSelector } from "react-redux";
+
+import {
+  InitialState,
+  Category as CategoryType,
+} from "../../../store/mainReducer";
 
 const Categories = () => {
+  const categories = useSelector((state: InitialState) => state.categories);
   return (
     <div className={classes.categories}>
-      {DATA.map((category, index) => (
-        <Category key={index} name={category} />
+      {categories.map((category: CategoryType) => (
+        <Category key={category.guid} category={category} />
       ))}
     </div>
   );
