@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 
 import classes from "./ModalWindow.module.scss";
 
-import { InitialState } from "../../../store/mainReducer";
+import { InitialState } from "../../store/types";
 
 const ModalWindowPortal: React.FC<{
   text: string;
@@ -28,12 +28,14 @@ const ModalWindowPortal: React.FC<{
   }, []);
 
   const closeModaloutHandler = (event: MouseEvent) => {
+    const element = event.target as HTMLElement;
     if (
-      event.target !== document.getElementById("button+") &&
-      event.target !== document.getElementById("button-")
+      element !== document.getElementById("button+") &&
+      element !== document.getElementById("button-") &&
+      element !== document.getElementById("buttonCreateJoke")
     ) {
       if (
-        (event.target as HTMLElement).closest("#modalWindow") !==
+        element.closest("#modalWindow") !==
         document.getElementById("modalWindow")
       ) {
         props.onCloseModal();
@@ -43,7 +45,7 @@ const ModalWindowPortal: React.FC<{
 
   const guid = selectedCategory ? selectedCategory.guid : "";
 
-  const inputHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const inputHandler = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInputText(event.target.value);
   };
 
@@ -64,11 +66,11 @@ const ModalWindowPortal: React.FC<{
         <div className={classes.modalWindow__body}>
           {props.isCreate && (
             <div className={classes.body__inputContainer}>
-              <input
+              <textarea
                 className={classes.body__inputContainer_input}
-                placeholder="Enter category name"
+                placeholder="Enter text"
                 onChange={inputHandler}
-              ></input>
+              ></textarea>
             </div>
           )}
           {props.isEmpty && (

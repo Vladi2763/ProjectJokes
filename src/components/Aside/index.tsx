@@ -1,14 +1,14 @@
 import classes from "./Aside.module.scss";
-import Categories from "./Categories/Categories";
-import Button from "./Button/Button";
-import ModalWindow from "./ModalWindow/ModalWindow";
+import Categories from "./Categories";
+import Button from "./Button";
+import ModalWindow from "../ModalWindow";
 
 import { addCategory, deleteCategory } from "../../store/actionsCreater";
 
 import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react";
 
-import { InitialState } from "../../store/mainReducer";
+import { InitialState } from "../../store/types";
 
 const Aside = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);

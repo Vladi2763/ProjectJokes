@@ -1,9 +1,9 @@
 import classes from "./Category.module.scss";
 
-import { Category, InitialState } from "../../../store/mainReducer";
+import { Category, InitialState } from "../../../store/types";
 import { useDispatch, useSelector } from "react-redux";
 
-import { selectCategory } from "../../../store/actionsCreater";
+import { selectCategory, filterJokes } from "../../../store/actionsCreater";
 
 const Category: React.FC<{ category: Category }> = ({ category }) => {
   const dispatch = useDispatch();
@@ -17,6 +17,7 @@ const Category: React.FC<{ category: Category }> = ({ category }) => {
 
   const selectCategoryHandler = (category: Category) => {
     dispatch(selectCategory(category));
+    dispatch(filterJokes());
   };
   return (
     <div

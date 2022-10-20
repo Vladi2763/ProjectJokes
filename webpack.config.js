@@ -13,6 +13,7 @@ module.exports = {
   output: {
     path: buildPath,
     filename: "bundle.js",
+    publicPath: "/",
   },
   plugins: [
     new MiniCssExtractPlugin({
@@ -74,5 +75,6 @@ module.exports = {
   devServer: {
     port: 3001,
     hot: true,
+    historyApiFallback: true,
   },
 };

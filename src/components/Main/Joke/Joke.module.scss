@@ -1,0 +1,31 @@
+.joke {
+    border-radius: 8px;
+    background-color: rgb(175, 164, 164);
+    margin-bottom: 10px;
+    padding: 5px;
+    color: black;
+
+    &__imgContainer img {
+        cursor: pointer;
+    }
+
+    &__imgContainer img:last-child:hover {
+        transform: translateY(-2px);
+    }
+
+    &__imgContainer:first-child {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 5px;
+    }
+
+    &__imgContainer:last-child {
+        display: flex;
+        justify-content: flex-start;
+        margin-top: 5px;
+    }
+}
+
+.joke:last-child {
+    margin-bottom: 0px;
+}

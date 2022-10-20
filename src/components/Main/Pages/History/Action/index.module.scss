@@ -1,0 +1,43 @@
+.action {
+    display: flex;
+    flex-direction: column;
+    border-radius: 8px;
+    background-color: rgb(175, 164, 164);
+    margin-bottom: 10px;
+    padding: 5px;
+    color: black;
+
+    &__textContainer {
+        display: flex;
+        width: 100%;
+    }
+
+    &__dateContainer {
+        display: flex;
+        justify-content: flex-end;
+        width: 100%;
+    }
+}
+
+.textContainer {
+    &_text {
+        font-size: 1.5rem;
+        color: white;
+    }
+}
+
+.dateContainer {
+    &_date {
+        margin-right: 10px;
+        color: aliceblue;
+    }
+
+    &_time {
+        color: aliceblue;
+    }
+}
+
+.action:last-child {
+    margin-bottom: 0px;
+}
+

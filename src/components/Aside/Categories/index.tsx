@@ -1,12 +1,9 @@
-import Category from "../Category/Category";
+import Category from "../Category";
 import classes from "./Categories.module.scss";
 
 import { useSelector } from "react-redux";
 
-import {
-  InitialState,
-  Category as CategoryType,
-} from "../../../store/mainReducer";
+import { InitialState, Category as CategoryType } from "../../../store/types";
 
 const Categories = () => {
   const categories = useSelector((state: InitialState) => state.categories);

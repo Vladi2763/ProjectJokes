@@ -24,8 +24,12 @@
 }
 
 .category:hover {
+    transition-duration: 0.5s;
     background-color: rgb(175, 172, 172);
     cursor: pointer;
+    filter: drop-shadow(1px 2px);
+    transform: translateY(-2px);
+    transform: translateX(-2px)
 }
 
 .category:last-child {

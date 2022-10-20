@@ -4,11 +4,14 @@
 
 html, body {
     width: 100%;
-    min-height: 100vh;
+    height: 100%;
     margin: 0;
+    background-color: #181818;
+    padding-left: 30px;
+    padding-right: 30px;
 }
 
 body #root {
     width: 100%;
-    min-height: 100vh;
+    height: 100%;
 }
