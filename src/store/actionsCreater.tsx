@@ -1,22 +1,30 @@
-import { fetchJokeCategories } from "../utils/fetchJokeCategories";
-import { fetchJokes as fetchAllJokes } from "../utils/fetchJokes";
+import fetchData from "../api/fetchData";
+
 import { InitialState, Category, Joke } from "./types";
 
 import { ThunkDispatch } from "redux-thunk";
 import { ActionCreator, Action } from "redux";
 
-export enum ActionType {
+import { url } from "../api/fetchData";
+
+enum ActionCategories {
   SET_CATEGORIES = "SET_CATEGORIES",
-  SET_JOKES = "SET_JOKES",
   SELECT_CATEGORY = "SELECT_CATEGORY",
   ADD_CATEGORY = "ADD_CATEGORY",
   DELETE_CATEGORY = "DELETE_CATEGORY",
+  CLEAR_HISTORY = "CLEAR_HISTORY",
+  DELETE_JOKES_FROM_CATEGORY = "DELETE_JOKES_FROM_CATEGORY",
+}
+
+enum ActionJokes {
+  SET_JOKES = "SET_JOKES",
   FILTER_JOKES = "FILTER_JOKES",
   TOGGLE_FAVORITE = "TOGGLE_FAVORITE",
   ADD_NEW_JOKE = "ADD_NEW_JOKE",
   DELETE_JOKE = "DELETE_JOKE",
-  CLEAR_HISTORY = "CLEAR_HISTORY",
 }
+
+export type ActionType = ActionCategories | ActionJokes;
 
 export type CategoriesDispatch = ThunkDispatch<
   InitialState,
@@ -34,86 +42,99 @@ const setJokesCategories: ActionCreator<Action> = (
   categories: Array<Category>
 ) => {
   return {
-    type: ActionType.SET_CATEGORIES,
+    type: ActionCategories.SET_CATEGORIES,
     categories,
   };
 };
 
 export const fetchJokesCategories = () => {
   return (dispatch: CategoriesDispatch) => {
-    fetchJokeCategories("get", "http://localhost:5000/api/Genres").then(
-      (data) => {
-        dispatch(setJokesCategories(data));
-      }
-    );
+    fetchData("get", url("Genres")).then((data) => {
+      dispatch(setJokesCategories(data));
+    });
   };
 };
 
-const setJokes: ActionCreator<Action> = (jokes) => {
+const setJokes: ActionCreator<Action> = (jokes: Array<Joke>) => {
   return {
-    type: ActionType.SET_JOKES,
+    type: ActionJokes.SET_JOKES,
     jokes,
   };
 };
 
 export const fetchJokes = () => {
   return (dispatch: JokesDispatch) => {
-    fetchAllJokes("get", "http://localhost:5000/api/Jokes").then((data) => {
+    fetchData("get", url("Jokes")).then((data) => {
       dispatch(setJokes(data));
     });
   };
 };
 
-export const selectCategory = (selectedCategory: Category) => {
+export const fetchFilteredJokes = (category: string | null) => {
+  return (dispatch: JokesDispatch) => {
+    fetchData("get", url(`Jokes/genre?guidGenre=${category}`)).then((data) => {
+      dispatch(filterJokes(data));
+    });
+  };
+};
+
+export const selectCategory = (selectedCategory: Category | null) => {
   return {
-    type: ActionType.SELECT_CATEGORY,
+    type: ActionCategories.SELECT_CATEGORY,
     selectedCategory,
   };
 };
 
 export const addCategory = (name: string) => {
   return {
-    type: ActionType.ADD_CATEGORY,
+    type: ActionCategories.ADD_CATEGORY,
     name,
   };
 };
 
 export const deleteCategory = (guid: string) => {
   return {
-    type: ActionType.DELETE_CATEGORY,
+    type: ActionCategories.DELETE_CATEGORY,
     guid,
   };
 };
 
-export const filterJokes = () => {
+export const filterJokes: ActionCreator<Action> = (jokes: Array<Joke>) => {
   return {
-    type: ActionType.FILTER_JOKES,
+    type: ActionJokes.FILTER_JOKES,
+    jokes,
   };
 };
 
 export const toggleFavoriteJoke = (joke: Joke) => {
   return {
-    type: ActionType.TOGGLE_FAVORITE,
+    type: ActionJokes.TOGGLE_FAVORITE,
     joke,
   };
 };
 
 export const addNewJoke = (name: string) => {
   return {
-    type: ActionType.ADD_NEW_JOKE,
+    type: ActionJokes.ADD_NEW_JOKE,
     name,
   };
 };
 
 export const deleteJoke = (guid: string) => {
   return {
-    type: ActionType.DELETE_JOKE,
+    type: ActionJokes.DELETE_JOKE,
     guid,
+  };
+};
+
+export const deleteJokes = () => {
+  return {
+    type: ActionCategories.DELETE_JOKES_FROM_CATEGORY,
   };
 };
 
 export const clearActionsHistory = () => {
   return {
-    type: ActionType.CLEAR_HISTORY,
+    type: ActionCategories.CLEAR_HISTORY,
   };
 };

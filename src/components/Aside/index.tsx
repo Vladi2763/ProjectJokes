@@ -3,7 +3,11 @@ import Categories from "./Categories";
 import Button from "./Button";
 import ModalWindow from "../ModalWindow";
 
-import { addCategory, deleteCategory } from "../../store/actionsCreater";
+import {
+  addCategory,
+  deleteCategory,
+  deleteJokes,
+} from "../../store/actionsCreater";
 
 import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react";
@@ -21,6 +25,8 @@ const Aside = () => {
   const selectedCategory = useSelector(
     (state: InitialState) => state.selectedCategory
   );
+
+  const isSelectedCategory = selectedCategory ? false : true;
 
   const openCreateModalWindow = () => {
     setIsCreateModalOpen(true);
@@ -49,6 +55,7 @@ const Aside = () => {
 
   const deleteCategoryHandler = (...args: Array<string>) => {
     const [name, guid] = args;
+    dispatch(deleteJokes());
     dispatch(deleteCategory(guid));
     setIsDeleteModalOpen(false);
   };
@@ -60,12 +67,14 @@ const Aside = () => {
           char="+"
           text="Add new Category"
           openModal={openCreateModalWindow}
+          isSelectedCategory={false}
         />
         <h2 className={classes.aside__header_title}>Жанры</h2>
         <Button
           char="-"
           text="Delete Category"
           openModal={openDeleteModalWindow}
+          isSelectedCategory={isSelectedCategory}
         />
       </div>
       <Categories />

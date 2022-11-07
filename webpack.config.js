@@ -6,13 +6,21 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const production = process.env.NODE_ENV === "production";
 
 const srcPath = path.resolve(__dirname, "src");
+const asidePath = path.resolve(__dirname, "src/components/Aside");
+const headerPath = path.resolve(__dirname, "src/components/Header");
+const mainrPath = path.resolve(__dirname, "src/components/Main");
 const buildPath = path.resolve(__dirname, "dist");
 
 module.exports = {
-  entry: path.join(srcPath, "index.tsx"),
+  entry: {
+    app: path.join(srcPath, "index.tsx"),
+    // aside: path.join(asidePath, "index.tsx"),
+    // header: path.join(headerPath, "index.tsx"),
+    // main: path.join(mainrPath, "index.tsx"),
+  },
   output: {
     path: buildPath,
-    filename: "bundle.js",
+    filename: "[name].js",
     publicPath: "/",
   },
   plugins: [

@@ -3,6 +3,7 @@ import classes from "./Button.module.scss";
 const Button: React.FC<{
   char: string;
   text: string;
+  isSelectedCategory: boolean;
   openModal: () => void;
 }> = (props) => {
   return (
@@ -10,6 +11,7 @@ const Button: React.FC<{
       className={classes.button}
       id={`button${props.char}`}
       onClick={() => props.openModal()}
+      disabled={props.isSelectedCategory}
     >
       {props.char}
     </button>

@@ -4,7 +4,7 @@ import contains from "../utils/contains";
 import getFromLocalStorage from "../utils/getFromLocalStorage";
 import addAction from "../utils/addAction";
 
-import { Action, InitialState } from "./types";
+import { Action, InitialState, Joke } from "./types";
 
 const initialState: InitialState = {
   categories: [],
@@ -144,24 +144,49 @@ const mainReducer = (state = initialState, action: Action) => {
     }
 
     case "FILTER_JOKES": {
-      const jokes = state.jokes;
+      let allFilteredJokes;
+      let newJokes;
+      let customJokes;
+      let modifiedCustomJokes = [];
+      let filteredJokes = action.jokes;
+
       const selectedCategory = state.selectedCategory;
 
-      const filteredJokes = jokes.filter(
-        (joke) => joke.genre === selectedCategory?.guid
-      );
+      if (
+        localStorage.getItem("jokes") &&
+        localStorage.getItem("jokes")!.length >= 1
+      ) {
+        customJokes = localStorage.getItem("jokes") as string;
+        modifiedCustomJokes = JSON.parse(customJokes).filter(
+          (joke: Joke) => joke.genre === selectedCategory?.guid
+        );
+        allFilteredJokes = filteredJokes.concat(modifiedCustomJokes);
+
+        if (state.favoriteJokes.length) {
+          newJokes = contains(allFilteredJokes, state.favoriteJokes);
+        } else {
+          newJokes = allFilteredJokes;
+        }
+      } else {
+        if (state.favoriteJokes.length) {
+          newJokes = contains(filteredJokes, state.favoriteJokes);
+        } else {
+          newJokes = [...filteredJokes];
+        }
+      }
 
       return {
         ...state,
-        filteredJokes: [...filteredJokes],
+        filteredJokes: [...newJokes],
+        customJokes: [...modifiedCustomJokes],
       };
     }
 
     case "TOGGLE_FAVORITE": {
       const history = state.history;
-      const selectedCategory = state.selectedCategory;
       const joke = toggleFavorite(action.joke);
       const jokes = state.jokes;
+      const filteredJokes = state.filteredJokes;
       const favoriteJokes = state.favoriteJokes;
       let newFavoriteJokes;
       let actionForHistory;
@@ -169,9 +194,10 @@ const mainReducer = (state = initialState, action: Action) => {
       const index = jokes.findIndex((joke) => joke.guid === action.joke.guid);
       jokes[index] = joke;
 
-      const filteredJokes = jokes.filter(
-        (joke) => joke.genre === selectedCategory?.guid
+      const indexFilteredJokes = filteredJokes.findIndex(
+        (joke) => joke.guid === action.joke.guid
       );
+      filteredJokes[indexFilteredJokes] = joke;
 
       if (joke.like) {
         newFavoriteJokes = favoriteJokes.concat(joke);
@@ -199,9 +225,21 @@ const mainReducer = (state = initialState, action: Action) => {
     case "ADD_NEW_JOKE": {
       const text = action.name;
       const selectedCategory = state.selectedCategory;
-      const jokes = state.jokes;
-      const customJokes = state.customJokes;
+      const filteredJokes = state.filteredJokes;
       const history = state.history;
+
+      let customJokes;
+      let modifiedCustomJokes;
+
+      if (
+        localStorage.getItem("jokes") &&
+        localStorage.getItem("jokes")!.length >= 1
+      ) {
+        customJokes = localStorage.getItem("jokes") as string;
+        modifiedCustomJokes = JSON.parse(customJokes);
+      } else {
+        modifiedCustomJokes = [];
+      }
 
       const newJoke = {
         genre: selectedCategory?.guid || "",
@@ -211,46 +249,41 @@ const mainReducer = (state = initialState, action: Action) => {
         custom: true,
       };
 
-      customJokes.push(newJoke);
-      jokes.push(newJoke);
-
-      const filteredJokes = jokes.filter(
-        (joke) => joke.genre === selectedCategory?.guid
-      );
+      modifiedCustomJokes.push(newJoke);
+      filteredJokes.push(newJoke);
 
       const actionForHistory = addAction("Added new joke");
       history.push(actionForHistory);
 
-      localStorage.setItem("jokes", JSON.stringify(customJokes));
+      localStorage.setItem("jokes", JSON.stringify(modifiedCustomJokes));
       localStorage.setItem("historyActions", JSON.stringify(history));
 
       return {
         ...state,
-        customJokes: [...customJokes],
+        customJokes: [...modifiedCustomJokes],
         filteredJokes: [...filteredJokes],
-        jokes: [...jokes],
       };
     }
 
     case "DELETE_JOKE": {
       const jokes = state.jokes;
-      const customJokes = state.customJokes;
       const favoriteJokes = state.favoriteJokes;
-      const selectedCategory = state.selectedCategory;
+      const filteredJokes = state.filteredJokes;
       const history = state.history;
+      const customJokes = localStorage.getItem("jokes") as string;
+      const modifiedCustomJokes = JSON.parse(customJokes);
 
       const id = action.guid;
 
       const newJokes = jokes.filter((joke) => joke.guid !== id);
+      const newFilteredJokes = filteredJokes.filter((joke) => joke.guid !== id);
 
       const newFavoriteJokes = favoriteJokes.filter(
         (favoritejoke) => favoritejoke.guid !== id
       );
 
-      const newCustomJokes = customJokes.filter((joke) => joke.guid !== id);
-
-      const filteredJokes = newJokes.filter(
-        (joke) => joke.genre === selectedCategory?.guid
+      const newCustomJokes = modifiedCustomJokes.filter(
+        (joke: Joke) => joke.guid !== id
       );
 
       const actionForHistory = addAction("Deleted joke");
@@ -264,7 +297,42 @@ const mainReducer = (state = initialState, action: Action) => {
         ...state,
         jokes: [...newJokes],
         favoriteJokes: [...newFavoriteJokes],
-        filteredJokes: [...filteredJokes],
+        filteredJokes: [...newFilteredJokes],
+        customJokes: [...newCustomJokes],
+      };
+    }
+
+    case "DELETE_JOKES_FROM_CATEGORY": {
+      const selectedCategory = state.selectedCategory;
+      const jokes = state.jokes;
+      const favoriteJokes = state.favoriteJokes;
+      const filteredJokes = state.filteredJokes;
+      const customJokes = localStorage.getItem("jokes") as string;
+      const modifiedCustomJokes = JSON.parse(customJokes);
+
+      const newJokes = jokes.filter(
+        (joke) => joke.genre !== selectedCategory?.guid
+      );
+      const newFilteredJokes = filteredJokes.filter(
+        (joke) => joke.genre !== selectedCategory?.guid
+      );
+
+      const newFavoriteJokes = favoriteJokes.filter(
+        (joke) => joke.genre !== selectedCategory?.guid
+      );
+
+      const newCustomJokes = modifiedCustomJokes.filter(
+        (joke: Joke) => joke.genre !== selectedCategory?.guid
+      );
+
+      localStorage.setItem("jokes", JSON.stringify(newCustomJokes));
+      localStorage.setItem("favorites", JSON.stringify(newFavoriteJokes));
+
+      return {
+        ...state,
+        jokes: [...newJokes],
+        favoriteJokes: [...newFavoriteJokes],
+        filteredJokes: [...newFilteredJokes],
         customJokes: [...newCustomJokes],
       };
     }
